@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <title>Wallet - Transferir Dinero</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <style>
+            body {
+                padding: 20px;
+            }
+            .container {
+                max-width: 400px;
+                margin: auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="card shadow p-4">
+                <h2 class="text-center mb-4">Enviar Dinero</h2>
+
+                <button class="btn btn-primary btn-block mb-3" id="addContactBtn">
+                Agregar nuevo contacto
+                </button>
+
+                <h5>Contactos</h5>
+                <ul class="list-group mb-3" id="contactList"></ul>
+
+                <div class="form-group mt-3">
+                <label for="amount">Monto a enviar</label>
+                    <input
+                        type="number"
+                        id="amount"
+                        class="form-control"
+                        placeholder="Ingrese el monto"
+                    >
+                </div>
+
+
+                <button class="btn btn-success btn-block" id="sendMoneyBtn">
+                Enviar dinero
+                </button>
+
+                <div id="message" class="text-center mt-3"></div>
+
+                <a href="menu.html" class="btn btn-link text-center mt-3">
+                Volver al menú principal
+                </a>
+            </div>
+        </div>
+
+        <!-- MODAL -->
+        <div class="modal fade" id="contactModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content p-3">
+                    <h5>Nuevo Contacto</h5>
+
+                    <input type="text" id="contactName" class="form-control mb-2" placeholder="Nombre y apellido">
+                    <input type="text" id="contactAccount" class="form-control mb-2" placeholder="N° cta (8 dígitos)">
+                    <input type="text" id="contactBank" class="form-control mb-3" placeholder="Nombre del banco">
+
+                    <button class="btn btn-primary btn-block" id="saveContactBtn">
+                        Guardar contacto
+                    </button>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+        <script>
+        if (!localStorage.getItem("logged")) {
+        window.location.href = "index.html";
+        }
+
+        const contactList = document.getElementById("contactList");
+        const msg = document.getElementById("message");
+
+        let contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+        let selectedContact = null;
+
+        // Render contactos
+        function renderContacts() {
+        contactList.innerHTML = "";
+        contacts.forEach((c, index) => {
+            const li = document.createElement("li");
+            li.className = "list-group-item";
+            li.innerHTML = `
+            <input type="radio" name="contact" value="${index}">
+            <strong>${c.name}</strong><br>
+            N° cta: ${c.account} - ${c.bank}
+            `;
+            contactList.appendChild(li);
+        });
+        }
+
+        renderContacts();
+
+        // Abrir modal
+        document.getElementById("addContactBtn").onclick = () => {
+        $("#contactModal").modal("show");
+        };
+
+        // Guardar contacto
+        document.getElementById("saveContactBtn").onclick = () => {
+        const name = document.getElementById("contactName").value.trim();
+        const account = document.getElementById("contactAccount").value.trim();
+        const bank = document.getElementById("contactBank").value.trim();
+
+        if (!name || !account || !bank) {
+            alert("Completa todos los campos");
+            return;
+        }
+
+        if (!/^\d{8}$/.test(account)) {
+            alert("El número de cuenta debe tener 8 dígitos");
+            return;
+        }
+
+        contacts.push({ name, account, bank });
+        localStorage.setItem("contacts", JSON.stringify(contacts));
+
+        $("#contactModal").modal("hide");
+        renderContacts();
+        };
+
+        // Enviar dinero
+        document.getElementById("sendMoneyBtn").onclick = () => {
+        const selected = document.querySelector('input[name="contact"]:checked');
+        if (!selected) {
+            msg.innerText = "Seleccione un contacto";
+            msg.className = "text-danger text-center mt-3";
+            return;
+        }
+
+        const amountInput = document.getElementById("amount");
+        const amount = Number(amountInput.value);
+        if (amount <= 0 || isNaN(amount)) {
+        msg.innerText = "Ingrese un monto válido";
+        msg.className = "text-danger text-center mt-3";
+        return;
+        }
+
+
+        let balance = Number(localStorage.getItem("balance"));
+
+        if (balance < amount) {
+            msg.innerText = "Saldo insuficiente";
+            msg.className = "text-danger text-center mt-3";
+            return;
+        }
+
+        balance -= amount;
+        localStorage.setItem("balance", balance);
+
+        const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+        const contact = contacts[selected.value];
+
+        transactions.push(`Transferencia a ${contact.name} - $${amount}`);
+        localStorage.setItem("transactions", JSON.stringify(transactions));
+
+        msg.innerText = "Transferencia realizada con éxito";
+        msg.className = "text-success text-center mt-3";
+
+        setTimeout(() => {
+            window.location.href = "menu.html";
+        }, 1000);
+        };
+        </script>
+    </body>
+</html>

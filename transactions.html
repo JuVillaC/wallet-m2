@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <title>Wallet - Últimos moviomientos</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <style>
+            body {
+                padding: 20px;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+            }
+            .container {
+                max-width: 400px;
+                margin: auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="card shadow p-4">
+                <h2 class="text-center mb-4">Últimos Movimientos</h2>
+
+                <ul class="list-group list-group-flush mb-3" id="list"></ul>
+
+                <a href="menu.html" class="btn btn-outline-primary btn-block mt-3">
+                    Volver al menú principal
+                </a>
+            </div>
+        </div>
+
+
+        <script>
+        if (!localStorage.getItem("logged")) {
+        window.location.href = "index.html";
+        }
+
+        const list = document.getElementById("list");
+        const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+
+        if (transactions.length === 0) {
+        const li = document.createElement("li");
+        li.className = "list-group-item d-flex justify-content-between align-items-center";
+        li.innerHTML = `
+            <div>
+                <strong>No hay movimientos</strong><br>
+                <small>Realiza un depósito o transferencia</small>
+            </div>
+        `;
+
+        list.appendChild(li);
+
+        } else {
+        transactions
+            .slice()
+            .reverse()
+            .forEach(t => {
+            const li = document.createElement("li");
+            li.className = "list-group-item";
+            li.innerText = t;
+            list.appendChild(li);
+            });
+        }
+        </script>
+
+
+
+    </body>
+</html>

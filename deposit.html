@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Wallet - Depositar Dinero</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card shadow p-4">
+            <h2 class="text-center mb-4">Depositar Dinero</h2>
+
+            <form>
+            <div class="form-group">
+                <label for="depositAmount">Monto a depositar</label>
+                <input type="number" class="form-control" id="depositAmount" placeholder="Ingrese la cantidad">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" id="depositBtn">
+                Realizar Depósito
+            </button>
+
+            <div id="message" class="text-center mt-3"></div>
+            </form>
+
+            <a href="menu.html" class="btn btn-link text-center mt-3">
+            Volver al menú principal
+            </a>
+        </div>
+    </div>
+
+
+    <script>
+    if (!localStorage.getItem("logged")) {
+    window.location.href = "index.html";
+    }
+
+    const form = document.querySelector("form");
+    const amountInput = document.getElementById("depositAmount");
+    const msg = document.getElementById("message");
+    const btn = document.getElementById("depositBtn");
+
+    form.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const amount = Number(amountInput.value);
+
+    msg.innerText = "";
+    msg.className = "text-center mt-3";
+    btn.disabled = true;
+    btn.innerHTML = "Procesando...";
+
+    if (amount <= 0 || isNaN(amount)) {
+        msg.innerText = "Ingrese un monto válido";
+        msg.classList.add("text-danger");
+        btn.disabled = false;
+        btn.innerHTML = "Realizar Depósito";
+        return;
+    }
+
+    let balance = Number(localStorage.getItem("balance")) || 0;
+    balance += amount;
+    localStorage.setItem("balance", balance);
+
+    const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+    transactions.push(`Depósito +$${amount}`);
+    localStorage.setItem("transactions", JSON.stringify(transactions));
+
+    msg.innerText = "Depósito realizado con éxito";
+    msg.classList.add("text-success");
+
+    setTimeout(() => {
+        window.location.href = "menu.html";
+    }, 900);
+    });
+    </script>
+
+
+
+</body>
+</html>

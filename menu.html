@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Wallet - Menú Principal</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card shadow p-4">
+            <h2 class="text-center mb-4">Menú Principal</h2>
+
+            <div class="text-center mb-4">
+                <small class="text-muted">Saldo disponible</small>
+                <h3 id="balance">$79.438</h3>
+            </div>
+            <div id="message" class="text-center text-muted mb-3"></div>
+
+            <button class="btn btn-primary btn-block mb-2" id="depositBtn">
+                Depositar dinero
+            </button>
+
+            <button class="btn btn-primary btn-block mb-2" id="sendBtn">
+                Hacer transferencia
+            </button>
+
+            <button class="btn btn-outline-primary btn-block mb-3" id="movBtn">
+                Ver movimientos
+            </button>
+
+            <button class="btn btn-danger btn-block" id="logoutBtn">
+                Cerrar sesión
+            </button>
+        </div>
+    </div>
+
+    <script>
+    if (!localStorage.getItem("logged")) {
+        window.location.href = "index.html";
+    }
+
+    const balance = localStorage.getItem("balance");
+    document.getElementById("balance").innerText = `$${balance}`;
+
+    const msg = document.getElementById("message");
+
+    document.getElementById("depositBtn").onclick = () => {
+    msg.innerText = "Redirigiendo a depósito...";
+    setTimeout(() => window.location.href = "deposit.html", 600);
+    };
+
+    document.getElementById("sendBtn").onclick = () => {
+    msg.innerText = "Redirigiendo a enviar dinero...";
+    setTimeout(() => window.location.href = "sendmoney.html", 600);
+    };
+
+    document.getElementById("movBtn").onclick = () => {
+    msg.innerText = "Redirigiendo a últimos movimientos...";
+    setTimeout(() => window.location.href = "transactions.html", 600);
+    };
+
+    document.getElementById("logoutBtn").onclick = () => {
+    localStorage.removeItem("logged");
+    window.location.href = "index.html";
+    };
+
+    </script>
+
+
+</body>
+</html>
