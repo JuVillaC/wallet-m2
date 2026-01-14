@@ -40,53 +40,57 @@
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     <script>
-    if (!localStorage.getItem("logged")) {
-    window.location.href = "index.html";
-    }
-
-    const form = document.querySelector("form");
-    const amountInput = document.getElementById("depositAmount");
-    const msg = document.getElementById("message");
-    const btn = document.getElementById("depositBtn");
-
-    form.addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    const amount = Number(amountInput.value);
-
-    msg.innerText = "";
-    msg.className = "text-center mt-3";
-    btn.disabled = true;
-    btn.innerHTML = "Procesando...";
-
-    if (amount <= 0 || isNaN(amount)) {
-        msg.innerText = "Ingrese un monto válido";
-        msg.classList.add("text-danger");
-        btn.disabled = false;
-        btn.innerHTML = "Realizar Depósito";
-        return;
-    }
-
-    let balance = Number(localStorage.getItem("balance")) || 0;
-    balance += amount;
-    localStorage.setItem("balance", balance);
-
-    const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
-    transactions.push(`Depósito +$${amount}`);
-    localStorage.setItem("transactions", JSON.stringify(transactions));
-
-    msg.innerText = "Depósito realizado con éxito";
-    msg.classList.add("text-success");
-
-    setTimeout(() => {
-        window.location.href = "menu.html";
-    }, 900);
+    $(document).ready(function () {
+        if (!localStorage.getItem("logged")) {
+        window.location.href = "index.html";
+        }
+    
+        const form = document.querySelector("form");
+        const amountInput = document.getElementById("depositAmount");
+        const msg = document.getElementById("message");
+        const btn = document.getElementById("depositBtn");
+    
+        form.addEventListener("submit", function(e) {
+        e.preventDefault();
+    
+        const amount = Number(amountInput.value);
+    
+        msg.innerText = "";
+        msg.className = "text-center mt-3";
+        btn.disabled = true;
+        btn.innerHTML = "Procesando...";
+    
+        if (amount <= 0 || isNaN(amount)) {
+            msg.innerText = "Ingrese un monto válido";
+            msg.classList.add("text-danger");
+            btn.disabled = false;
+            btn.innerHTML = "Realizar Depósito";
+            return;
+        }
+    
+        let balance = Number(localStorage.getItem("balance")) || 0;
+        balance += amount;
+        localStorage.setItem("balance", balance);
+    
+        const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+        transactions.push(`Depósito +$${amount}`);
+        localStorage.setItem("transactions", JSON.stringify(transactions));
+    
+        msg.innerText = "Depósito realizado con éxito";
+        msg.classList.add("text-success");
+    
+        setTimeout(() => {
+            window.location.href = "menu.html";
+        }, 900);
+        });
     });
     </script>
 
 
 
 </body>
+
 </html>
