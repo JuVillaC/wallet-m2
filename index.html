@@ -66,61 +66,63 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
-    const form = document.querySelector("form");
-    const emailInput = document.getElementById("email");
-    const pwdInput = document.getElementById("pwd");
-    const errorDiv = document.getElementById("error");
-    const btn = document.getElementById("loginBtn");
-
-    form.addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    errorDiv.innerText = "";
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Validando...';
-
-    const email = emailInput.value.trim();
-    const pwd = pwdInput.value.trim();
-
-    if (!email || !pwd) {
-        errorDiv.innerText = "Completa todos los campos";
-        btn.disabled = false;
-        btn.innerHTML = "Iniciar Sesión";
-        return;
-    }
-
-    setTimeout(() => {
-        if (email === "usuario@wallet.cl" && pwd === "1234") {
-        localStorage.setItem("logged", "true");
-
-        if (!localStorage.getItem("balance")) {
-            localStorage.setItem("balance", 79438);
-            localStorage.setItem("transactions", JSON.stringify([]));
+    $(document).ready(function () {
+        const form = document.querySelector("form");
+        const emailInput = document.getElementById("email");
+        const pwdInput = document.getElementById("pwd");
+        const errorDiv = document.getElementById("error");
+        const btn = document.getElementById("loginBtn");
+    
+        form.addEventListener("submit", function(e) {
+        e.preventDefault();
+    
+        errorDiv.innerText = "";
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Validando...';
+    
+        const email = emailInput.value.trim();
+        const pwd = pwdInput.value.trim();
+    
+        if (!email || !pwd) {
+            errorDiv.innerText = "Completa todos los campos";
+            btn.disabled = false;
+            btn.innerHTML = "Iniciar Sesión";
+            return;
         }
-
-        // ✅ REDIRECCIÓN
-        window.location.href = "menu.html";
+    
+        setTimeout(() => {
+            if (email === "usuario@wallet.cl" && pwd === "1234") {
+            localStorage.setItem("logged", "true");
+    
+            if (!localStorage.getItem("balance")) {
+                localStorage.setItem("balance", 79438);
+                localStorage.setItem("transactions", JSON.stringify([]));
+            }
+    
+            // ✅ REDIRECCIÓN
+            window.location.href = "menu.html";
+            } else {
+            errorDiv.innerText = "Email o contraseña incorrectos";
+            btn.disabled = false;
+            btn.innerHTML = "Iniciar Sesión";
+            }
+        }, 800);
+        });
+    
+        const togglePwd = document.getElementById("togglePwd");
+    
+        togglePwd.addEventListener("click", () => {
+        if (pwdInput.type === "password") {
+            pwdInput.type = "text";
+            togglePwd.innerHTML = '<i class="bi bi-eye-slash"></i>';
         } else {
-        errorDiv.innerText = "Email o contraseña incorrectos";
-        btn.disabled = false;
-        btn.innerHTML = "Iniciar Sesión";
+            pwdInput.type = "password";
+            togglePwd.innerHTML = '<i class="bi bi-eye"></i>';
         }
-    }, 800);
+        });
     });
-
-    const togglePwd = document.getElementById("togglePwd");
-
-    togglePwd.addEventListener("click", () => {
-    if (pwdInput.type === "password") {
-        pwdInput.type = "text";
-        togglePwd.innerHTML = '<i class="bi bi-eye-slash"></i>';
-    } else {
-        pwdInput.type = "password";
-        togglePwd.innerHTML = '<i class="bi bi-eye"></i>';
-    }
-    });
-
     </script>
 
 </body>
