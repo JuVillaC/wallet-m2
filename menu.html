@@ -45,39 +45,43 @@
             </button>
         </div>
     </div>
-
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
     <script>
-    if (!localStorage.getItem("logged")) {
+    $(document).ready(function () {
+        if (!localStorage.getItem("logged")) {
+            window.location.href = "index.html";
+        }
+    
+        const balance = localStorage.getItem("balance");
+        document.getElementById("balance").innerText = `$${balance}`;
+    
+        const msg = document.getElementById("message");
+    
+        document.getElementById("depositBtn").onclick = () => {
+        msg.innerText = "Redirigiendo a depósito...";
+        setTimeout(() => window.location.href = "deposit.html", 600);
+        };
+    
+        document.getElementById("sendBtn").onclick = () => {
+        msg.innerText = "Redirigiendo a enviar dinero...";
+        setTimeout(() => window.location.href = "sendmoney.html", 600);
+        };
+    
+        document.getElementById("movBtn").onclick = () => {
+        msg.innerText = "Redirigiendo a últimos movimientos...";
+        setTimeout(() => window.location.href = "transactions.html", 600);
+        };
+    
+        document.getElementById("logoutBtn").onclick = () => {
+        localStorage.removeItem("logged");
         window.location.href = "index.html";
-    }
-
-    const balance = localStorage.getItem("balance");
-    document.getElementById("balance").innerText = `$${balance}`;
-
-    const msg = document.getElementById("message");
-
-    document.getElementById("depositBtn").onclick = () => {
-    msg.innerText = "Redirigiendo a depósito...";
-    setTimeout(() => window.location.href = "deposit.html", 600);
-    };
-
-    document.getElementById("sendBtn").onclick = () => {
-    msg.innerText = "Redirigiendo a enviar dinero...";
-    setTimeout(() => window.location.href = "sendmoney.html", 600);
-    };
-
-    document.getElementById("movBtn").onclick = () => {
-    msg.innerText = "Redirigiendo a últimos movimientos...";
-    setTimeout(() => window.location.href = "transactions.html", 600);
-    };
-
-    document.getElementById("logoutBtn").onclick = () => {
-    localStorage.removeItem("logged");
-    window.location.href = "index.html";
-    };
-
+        };
+    });
     </script>
 
 
 </body>
+
 </html>
