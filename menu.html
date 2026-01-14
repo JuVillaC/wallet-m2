@@ -50,38 +50,47 @@
     
     <script>
     $(document).ready(function () {
-        if (!localStorage.getItem("logged")) {
-            window.location.href = "index.html";
-        }
     
-        const balance = localStorage.getItem("balance");
-        document.getElementById("balance").innerText = `$${balance}`;
-    
-        const msg = document.getElementById("message");
-    
-        document.getElementById("depositBtn").onclick = () => {
-        msg.innerText = "Redirigiendo a depósito...";
-        setTimeout(() => window.location.href = "deposit.html", 600);
-        };
-    
-        document.getElementById("sendBtn").onclick = () => {
-        msg.innerText = "Redirigiendo a enviar dinero...";
-        setTimeout(() => window.location.href = "sendmoney.html", 600);
-        };
-    
-        document.getElementById("movBtn").onclick = () => {
-        msg.innerText = "Redirigiendo a últimos movimientos...";
-        setTimeout(() => window.location.href = "transactions.html", 600);
-        };
-    
-        document.getElementById("logoutBtn").onclick = () => {
-        localStorage.removeItem("logged");
+      // Protección de sesión
+      if (!localStorage.getItem("logged")) {
         window.location.href = "index.html";
-        };
+      }
+    
+      // Mostrar saldo
+      const balance = localStorage.getItem("balance") || 0;
+      $('#balance').text(`$${balance}`);
+    
+      // Botón depositar
+      $('#depositBtn').click(function () {
+        $('#message').text('Redirigiendo a depósito...');
+        setTimeout(function () {
+          window.location.href = 'deposit.html';
+        }, 600);
+      });
+    
+      // Botón enviar dinero
+      $('#sendBtn').click(function () {
+        $('#message').text('Redirigiendo a enviar dinero...');
+        setTimeout(function () {
+          window.location.href = 'sendmoney.html';
+        }, 600);
+      });
+    
+      // Botón últimos movimientos
+      $('#movBtn').click(function () {
+        $('#message').text('Redirigiendo a últimos movimientos...');
+        setTimeout(function () {
+          window.location.href = 'transactions.html';
+        }, 600);
+      });
+    
+      // Cerrar sesión
+      $('#logoutBtn').click(function () {
+        localStorage.removeItem('logged');
+        window.location.href = 'index.html';
+      });
     });
     </script>
-
-
 </body>
-
 </html>
+
