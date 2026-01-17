@@ -2,198 +2,73 @@
 <html lang="es">
     <head>
         <title>Wallet - Transferir Dinero</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" href="./favicon.ico" type="image/x-icon">
-        <style>
-            body {
-                padding: 20px;
-            }
-            .container {
-                max-width: 400px;
-                margin: auto;
-            }
-        </style>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="styles.css">
     </head>
+
     <body>
-        <div class="container">
-            <div class="card shadow p-4">
-                <h2 class="text-center mb-4">Enviar Dinero</h2>
 
-                <button class="btn btn-primary btn-block mb-3" id="addContactBtn">
+        <div class="app-wrapper">
+
+            <!-- Header -->
+            <header class="app-header">
+                <i class="bi bi-arrow-left" id="backMenu"></i>
+                <h3>Realizar nueva transferencia</h3>
+                <span></span>
+            </header>
+
+            <!-- Botón nuevo contacto -->
+            <button class="btn-login mb-3" id="addContactBtn">
                 Agregar nuevo contacto
-                </button>
+            </button>
 
-                <h5>Contactos</h5>
-                <ul class="list-group mb-3" id="contactList"></ul>
-
-                <div class="form-group mt-3">
-                <label for="amount">Monto a enviar</label>
-                    <input
-                        type="number"
-                        id="amount"
-                        class="form-control"
-                        placeholder="Ingrese el monto"
-                    >
-                </div>
-
-
-                <button class="btn btn-success btn-block" id="sendMoneyBtn" style="display:none;">
-                  Enviar dinero
-                </button>
-
-                <div id="alert-container" class="mt-3"></div>
-
-                <a href="menu.html" class="btn btn-link text-center mt-3">
-                Volver al menú principal
-                </a>
+            <!-- Lista de contactos -->
+            <div class="login-card">
+                <h5 class="mb-3">Contactos</h5>
+                <ul class="list-group" id="contactlist"></ul>
             </div>
+
+            <!-- Formulario de transferencia -->
+            <form id="sendForm" class="deposit-form">
+                <input type="number" 
+                    id="amount" 
+                    class="form-control text-center" 
+                    placeholder="Monto a enviar" 
+                    min="1" 
+                    required
+                >
+                <button type="button" class="btn-login" id="sendMoneyBtn" style="display:none;">
+                    Realizar transferencia
+                </button>
+            </form>
+            <div id="alert-container"></div>
         </div>
 
-        <!-- MODAL -->
+        <!-- Formulario nuevo contacto -->
         <div class="modal fade" id="contactModal" tabindex="-1">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content p-3">
-                    <h5>Nuevo Contacto</h5>
-
+                    <h5 class="mb-3">Nuevo contacto</h5>
                     <input type="text" id="contactName" class="form-control mb-2" placeholder="Nombre y apellido">
-                    <input type="text" id="contactAccount" class="form-control mb-2" placeholder="N° cta (8 dígitos)">
-                    <input type="text" id="contactBank" class="form-control mb-3" placeholder="Nombre del banco">
-
-                    <button class="btn btn-primary btn-block" id="saveContactBtn">
+                    <input type="text" id="contactRut" class="form-control mb-2" placeholder="Ingrese su rut (sin puntos ni guión)">
+                    <select id="contactTypeAccount" class="form-control mb-2 custom-select">
+                        <option value="">Seleccione tipo de cuenta</option>
+                        <option value="Cuenta Vista">Cuenta Vista</option>
+                        <option value="Cuenta Corriente"></option>
+                        <option value="Cuenta de Ahorro"></option>
+                    </select>
+                    <input type="text" id="contactNumberAccount" class="form-control mb-2" placeholder="n°cta (min 8 dígitos)">
+                    <input type="text" id="contactBank" class="form-control mb-3" placeholder="Banco de destino">
+                    <button class="btn-login" id="saveContactBtn">
                         Guardar contacto
                     </button>
                 </div>
             </div>
         </div>
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-        <script>
-        $(document).ready(function () {
-        
-          // Protección de sesión
-          if (!localStorage.getItem("logged")) {
-            window.location.href = "index.html";
-          }
-        
-          let contacts = JSON.parse(localStorage.getItem("contacts")) || [];
-        
-          // Renderizar contactos
-          function renderContacts() {
-            $('#contactList').html('');
-            contacts.forEach((c, index) => {
-              $('#contactList').append(`
-                <li class="list-group-item">
-                  <input type="radio" name="contact" value="${index}">
-                  <strong>${c.name}</strong><br>
-                  N° cta: ${c.account} - ${c.bank}
-                </li>
-              `);
-            });
-          }
-        
-          renderContacts();
-        
-          // Abrir modal
-          $('#addContactBtn').click(function () {
-            $('#contactModal').modal('show');
-          });
-        
-          // Guardar contacto
-          $('#saveContactBtn').click(function () {
-            const name = $('#contactName').val().trim();
-            const account = $('#contactAccount').val().trim();
-            const bank = $('#contactBank').val().trim();
-        
-            $('#alert-container').html('');
-        
-            if (!name || !account || !bank) {
-              $('#alert-container').html(`
-                <div class="alert alert-danger">
-                  Completa todos los campos
-                </div>
-              `);
-              return;
-            }
-        
-            if (!/^\d{8}$/.test(account)) {
-              $('#alert-container').html(`
-                <div class="alert alert-danger">
-                  El número de cuenta debe tener 8 dígitos
-                </div>
-              `);
-              return;
-            }
-        
-            contacts.push({ name, account, bank });
-            localStorage.setItem("contacts", JSON.stringify(contacts));
-        
-            $('#contactModal').modal('hide');
-            $('#contactName, #contactAccount, #contactBank').val('');
-            renderContacts();
-          });
-        
-          // Mostrar botón al seleccionar contacto
-          $(document).on('change', 'input[name="contact"]', function () {
-            $('#sendMoneyBtn').fadeIn();
-            $(this).closest('li').addClass('active')
-              .siblings().removeClass('active');
-          });
-        
-          // Enviar dinero
-          $('#sendMoneyBtn').click(function () {
-            const selected = $('input[name="contact"]:checked');
-        
-            if (!selected.length) {
-              $('#alert-container').html(`
-                <div class="alert alert-danger">
-                  Seleccione un contacto
-                </div>
-              `);
-              return;
-            }
-        
-            const amount = Number($('#amount').val());
-            if (amount <= 0 || isNaN(amount)) {
-              $('#alert-container').html(`
-                <div class="alert alert-danger">
-                  Ingrese un monto válido
-                </div>
-              `);
-              return;
-            }
-        
-            let balance = Number(localStorage.getItem("balance")) || 0;
-            if (balance < amount) {
-              $('#alert-container').html(`
-                <div class="alert alert-danger">
-                  Saldo insuficiente
-                </div>
-              `);
-              return;
-            }
-        
-            balance -= amount;
-            localStorage.setItem("balance", balance);
-        
-            const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
-            const contact = contacts[selected.val()];
-            transactions.push(`Transferencia a ${contact.name} - $${amount}`);
-            localStorage.setItem("transactions", JSON.stringify(transactions));
-        
-            $('#alert-container').html(`
-              <div class="alert alert-success">
-                Transferencia realizada con éxito
-              </div>
-            `);
-        
-            setTimeout(function () {
-              window.location.href = "menu.html";
-            }, 1000);
-          });
-        
-        });
-        </script>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="sendmoney.js"></script>
+                
     </body>
-</html>
-
-
